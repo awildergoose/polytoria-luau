@@ -23,7 +23,7 @@
 -   [x] Part
 -   [x] Seat
 -   [x] Text3D
--   [ ] Tool
+-   [x] Tool
 -   [x] Truss
 
 ## Effects
