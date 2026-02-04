@@ -1,0 +1,7 @@
+{
+    "luau-lsp.fflags.sync": false,
+    "luau-lsp.ignoreGlobs": [
+        "**/_Index/**",
+        "**/*.d.luau"
+    ]
+}
