@@ -69,7 +69,7 @@
 ## UI
 
 -   [x] GUI
--   [ ] PlayerGUI
+-   [x] PlayerGUI
 -   [ ] UIButton
 -   [ ] UIField
 -   [ ] UIHVLayout
