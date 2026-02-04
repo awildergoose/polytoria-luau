@@ -21,7 +21,7 @@
 -   [x] Model
 -   [ ] NPC
 -   [x] Part
--   [ ] Seat
+-   [x] Seat
 -   [ ] Text3D
 -   [ ] Tool
 -   [x] Truss

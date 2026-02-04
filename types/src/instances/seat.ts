@@ -1,4 +1,8 @@
-import type { Instance } from "./instance";
+import type { Part } from "./part";
+import type { Player } from "./player";
 
-// TODO
-export declare class Seat extends Instance {}
+export declare class Seat extends Part {
+	Sat: Event<Player>;
+	Vacated: Event<Player>;
+	Occupant: Player | undefined;
+}
