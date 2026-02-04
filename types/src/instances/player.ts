@@ -15,7 +15,7 @@ export declare class Player extends Instance {
 	ClearAppearance(): void;
 	OwnsItem(
 		assetID: number,
-		callback: (err: any, owns: boolean) => void
+		callback: (success: boolean, owned: boolean) => void
 	): void;
 	ResetAppearance(): void;
 	Respawn(): void;

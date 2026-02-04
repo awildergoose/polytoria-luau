@@ -19,7 +19,7 @@ export declare class Environment extends Instance {
 		radius: number | undefined,
 		force: number | undefined,
 		affectAnchored: boolean | undefined,
-		callback: any,
+		callback: ((hit: Instance) => void) | undefined,
 		damage: number | undefined
 	): void;
 	OverlapBox(
