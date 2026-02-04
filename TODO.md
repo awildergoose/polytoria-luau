@@ -9,7 +9,7 @@
 -   [x] Hidden
 -   [x] Lighting
 -   [ ] Player
--   [ ] PlayerDefaults
+-   [x] PlayerDefaults
 -   [ ] Players
 -   [ ] ScriptService
 
