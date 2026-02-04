@@ -46,7 +46,7 @@
 -   [x] BaseScript
 -   [x] LocalScript
 -   [x] ModuleScript
--   [ ] NetworkEvent
+-   [x] NetworkEvent
 -   [x] ScriptInstance
 
 ## Values
