@@ -39,7 +39,7 @@
 
 ## Physics
 
--   [ ] BodyPosition
+-   [x] BodyPosition
 
 ## Scripting
 
