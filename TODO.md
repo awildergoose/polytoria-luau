@@ -33,7 +33,7 @@
 -   [x] GradientSky
 -   [x] ImageSky
 -   [ ] Particles
--   [ ] PointLight
+-   [x] PointLight
 -   [ ] Sound
 -   [ ] SpotLight
 -   [ ] SunLight
