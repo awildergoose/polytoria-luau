@@ -34,7 +34,7 @@
 -   [x] ImageSky
 -   [ ] Particles
 -   [x] PointLight
--   [ ] Sound
+-   [x] Sound
 -   [x] SpotLight
 -   [x] SunLight
 
