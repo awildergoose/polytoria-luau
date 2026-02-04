@@ -73,11 +73,11 @@
 -   [x] UIButton
 -   [x] UIField
 -   [x] UIHVLayout
--   [ ] UIHorizontalLayout
+-   [x] UIHorizontalLayout
 -   [ ] UIImage
 -   [x] UILabel
 -   [ ] UITextInput
--   [ ] UIVerticalLayout
+-   [x] UIVerticalLayout
 -   [x] UIView
 
 ## Enums
