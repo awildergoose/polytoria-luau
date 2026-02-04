@@ -18,7 +18,7 @@
 -   [ ] Climbable
 -   [x] Folder
 -   [ ] MeshPart
--   [ ] Model
+-   [x] Model
 -   [ ] NPC
 -   [ ] Part
 -   [ ] Seat
