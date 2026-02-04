@@ -123,3 +123,4 @@
 -   [x] Vector2
 -   [x] Vector3
 -   [x] Bounds
+-   [x] Quaternion
