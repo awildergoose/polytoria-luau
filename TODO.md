@@ -11,7 +11,7 @@
 -   [ ] Player
 -   [x] PlayerDefaults
 -   [x] Players
--   [ ] ScriptService
+-   [x] ScriptService
 
 ## World
 
