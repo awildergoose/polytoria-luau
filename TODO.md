@@ -100,6 +100,7 @@
 -   [x] TextVerticalAlign
 -   [x] TweenType
 -   [x] VerticalAlignment
+-   [x] TextAnchor
 
 ## Static Classes
 

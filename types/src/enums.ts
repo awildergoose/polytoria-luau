@@ -193,3 +193,17 @@ export enum VerticalAlignment {
 	Middle,
 	Bottom,
 }
+
+// from Unity
+
+export enum TextAnchor {
+	UpperLeft,
+	UpperCenter,
+	UpperRight,
+	MiddleLeft,
+	MiddleCenter,
+	MiddleRight,
+	LowerLeft,
+	LowerCenter,
+	LowerRight,
+}
