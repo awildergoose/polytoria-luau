@@ -36,7 +36,7 @@
 -   [x] PointLight
 -   [ ] Sound
 -   [x] SpotLight
--   [ ] SunLight
+-   [x] SunLight
 
 ## Physics
 
