@@ -294,10 +294,9 @@ function visitClass(clazz: ClassDeclaration) {
 }
 
 function visitAlias(alias: TypeAliasDeclaration) {
-	// TODO: prevent getText
 	ir.aliases.set(alias.getName(), {
 		name: alias.getName(),
-		type: alias.getType().getText(),
+		type: typeNodeToName(alias.getTypeNodeOrThrow()),
 	});
 }
 
