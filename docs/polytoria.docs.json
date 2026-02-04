@@ -1,0 +1,7 @@
+{
+    "@polytoria/global/game": {
+        "documentation": " Game is the root object in the Polytoria instance tree. It is the object from which everything is descended.",
+        "learn_more_link": "https://docs.polytoria.com/objects/game/Game/",
+        "code_sample": ""
+    }
+}

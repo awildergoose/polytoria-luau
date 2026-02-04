@@ -3,5 +3,20 @@
     "luau-lsp.ignoreGlobs": [
         "**/_Index/**",
         "**/*.d.luau"
+    ],
+    "luau-lsp.types.definitionFiles": {
+        "@polytoria": "./generated/generated.d.luau"
+    },
+    "luau-lsp.types.documentationFiles": [
+        "./docs/polytoria.docs.json"
+    ],
+    "luau-lsp.platform.type": "standard",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "*.docs.json"
+            ],
+            "url": "./docs/schema.json"
+        }
     ]
 }
