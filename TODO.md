@@ -10,7 +10,7 @@
 -   [x] Lighting
 -   [ ] Player
 -   [x] PlayerDefaults
--   [ ] Players
+-   [x] Players
 -   [ ] ScriptService
 
 ## World
