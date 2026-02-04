@@ -81,24 +81,24 @@
 
 ## Enums
 
--   [ ] AmbientSource
--   [ ] CameraMode
--   [ ] CollisionType
--   [ ] ForceMode
--   [ ] HorizontalAlignment
--   [ ] ImageType
--   [ ] PartMaterial
--   [ ] PartShape
--   [ ] ParticleColorMode
--   [ ] ParticleShape
--   [ ] ParticleSimulationSpace
--   [ ] PhysicMaterialCombine
--   [ ] SkyboxPreset
--   [ ] TextFontPreset
--   [ ] TextJustify
--   [ ] TextVerticalAlign
--   [ ] TweenType
--   [ ] VerticalAlignment
+-   [x] AmbientSource
+-   [x] CameraMode
+-   [x] CollisionType
+-   [x] ForceMode
+-   [x] HorizontalAlignment
+-   [x] ImageType
+-   [x] PartMaterial
+-   [x] PartShape
+-   [x] ParticleColorMode
+-   [x] ParticleShape
+-   [x] ParticleSimulationSpace
+-   [x] PhysicMaterialCombine
+-   [x] SkyboxPreset
+-   [x] TextFontPreset
+-   [x] TextJustify
+-   [x] TextVerticalAlign
+-   [x] TweenType
+-   [x] VerticalAlignment
 
 ## Static Classes
 
