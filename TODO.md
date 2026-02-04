@@ -31,7 +31,7 @@
 -   [x] Decal
 -   [x] SkyBase
 -   [x] GradientSky
--   [ ] ImageSky
+-   [x] ImageSky
 -   [ ] Particles
 -   [ ] PointLight
 -   [ ] Sound
