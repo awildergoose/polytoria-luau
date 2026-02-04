@@ -53,7 +53,7 @@
 ## Values
 
 -   [x] BoolValue
--   [ ] ColorValue
+-   [x] ColorValue
 -   [ ] InstanceValue
 -   [ ] IntValue
 -   [ ] NumberValue
