@@ -58,7 +58,7 @@
 -   [ ] IntValue
 -   [ ] NumberValue
 -   [ ] StringValue
--   [ ] ValueBase
+-   [x] ValueBase
 -   [ ] Vector3Value
 
 ## System
