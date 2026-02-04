@@ -120,6 +120,8 @@ function typeNodeToName(t: TypeNode): string {
 		case SyntaxKind.StringKeyword:
 		case SyntaxKind.AnyKeyword:
 			return t.getText();
+		case SyntaxKind.UndefinedKeyword:
+			return "nil";
 		default:
 			console.warn(
 				`failed to handle type node ${t.getKindName()}: "${t.print()}"`
