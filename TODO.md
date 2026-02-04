@@ -28,7 +28,7 @@
 
 ## Effects
 
--   [ ] Decal
+-   [x] Decal
 -   [ ] GradientSky
 -   [ ] ImageSky
 -   [ ] Particles
