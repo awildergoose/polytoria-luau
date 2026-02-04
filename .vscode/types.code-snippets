@@ -23,5 +23,16 @@
             "\t$0",
             "}"
         ],
+    },
+    "instancedef": {
+        "scope": "typescript",
+        "prefix": "instancedef",
+        "body": [
+            "import type { Instance } from \"./instance\";",
+            "",
+            "export declare class $1 extends Instance {",
+            "\t$0",
+            "}"
+        ],
     }
 }
