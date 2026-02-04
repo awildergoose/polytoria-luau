@@ -56,7 +56,7 @@
 -   [x] ColorValue
 -   [x] InstanceValue
 -   [x] IntValue
--   [ ] NumberValue
+-   [x] NumberValue
 -   [ ] StringValue
 -   [x] ValueBase
 -   [ ] Vector3Value
