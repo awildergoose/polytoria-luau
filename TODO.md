@@ -106,7 +106,7 @@
 
 -   [x] Achievements
 -   [x] Chat
--   [ ] CoreUI
+-   [x] CoreUI
 -   [ ] Datastore
 -   [ ] Http
 -   [ ] Input
