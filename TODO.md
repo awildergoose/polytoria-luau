@@ -20,7 +20,7 @@
 -   [ ] MeshPart
 -   [x] Model
 -   [ ] NPC
--   [ ] Part
+-   [x] Part
 -   [ ] Seat
 -   [ ] Text3D
 -   [ ] Tool
