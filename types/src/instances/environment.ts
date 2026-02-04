@@ -38,7 +38,7 @@ export declare class Environment extends Instance {
 		direction: Vector3,
 		maxDistance: number | undefined,
 		ignoreList: Instance[] | undefined
-	): RayResult;
+	): RayResult | undefined;
 	RaycastAll(
 		origin: Vector3,
 		direction: Vector3,
