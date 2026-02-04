@@ -124,3 +124,4 @@
 -   [x] Vector3
 -   [x] Bounds
 -   [x] Quaternion
+-   [x] AnimationInfo
