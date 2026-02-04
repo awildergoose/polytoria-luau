@@ -55,7 +55,7 @@
 -   [x] BoolValue
 -   [x] ColorValue
 -   [x] InstanceValue
--   [ ] IntValue
+-   [x] IntValue
 -   [ ] NumberValue
 -   [ ] StringValue
 -   [x] ValueBase
