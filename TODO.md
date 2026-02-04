@@ -17,7 +17,7 @@
 
 -   [x] Climbable
 -   [x] Folder
--   [ ] MeshPart
+-   [x] MeshPart
 -   [x] Model
 -   [ ] NPC
 -   [x] Part
