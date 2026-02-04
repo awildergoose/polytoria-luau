@@ -24,7 +24,7 @@
 -   [ ] Seat
 -   [ ] Text3D
 -   [ ] Tool
--   [ ] Truss
+-   [x] Truss
 
 ## Effects
 
