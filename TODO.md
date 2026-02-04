@@ -15,7 +15,7 @@
 
 ## World
 
--   [ ] Climbable
+-   [x] Climbable
 -   [x] Folder
 -   [ ] MeshPart
 -   [x] Model
