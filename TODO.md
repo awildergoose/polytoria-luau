@@ -35,7 +35,7 @@
 -   [ ] Particles
 -   [x] PointLight
 -   [ ] Sound
--   [ ] SpotLight
+-   [x] SpotLight
 -   [ ] SunLight
 
 ## Physics
