@@ -1,6 +1,8 @@
 declare global {
 	// TODO: auto-generate this
 	type ClassName = string;
+	// internal
+	type Tuple<A extends any | void = any, B extends any | void = any> = {};
 
 	type Event<T extends any[] | void = any[]> = {
 		Connect(

@@ -10,6 +10,7 @@ import {
 	TypeNode,
 	TypeReferenceNode,
 	ParameterDeclaration,
+	FunctionTypeNode,
 } from "ts-morph";
 import fs from "fs";
 
@@ -131,6 +132,13 @@ function throwUnhandled(node: Node) {
 	throw new Error(`Unhandled node type: ${node.getKindName()}`);
 }
 
+function visitReturnType(fn: FunctionTypeNode) {
+	let returns = typeNodeToName(fn.getReturnTypeNodeOrThrow());
+	if (returns === "void") returns = "()";
+
+	return returns;
+}
+
 function visitParameter(p: ParameterDeclaration) {
 	const name = p.getName();
 	const type = typeNodeToName(p.getTypeNodeOrThrow());
@@ -142,6 +150,11 @@ function visitTypeReference(node: TypeReferenceNode) {
 	// TODO: prevent getText
 	const name = node.getTypeName().getText();
 	const typeArgs = node.getTypeArguments();
+
+	// TODO: prevent getText
+	if (typeArgs.length > 0 && node.getText().startsWith("Tuple")) {
+		return `(${typeArgs.map((x) => x.getText()).join(", ")})`;
+	}
 
 	let text = name;
 
@@ -247,6 +260,7 @@ function visitClass(clazz: ClassDeclaration) {
 		if (Node.isMethodDeclaration(m)) {
 			let returns = typeNodeToName(m.getReturnTypeNodeOrThrow());
 			if (returns === "void") returns = "()";
+
 			let item: IRMethod = {
 				name: m.getName(),
 				params: m.getParameters().map((p) => ({
