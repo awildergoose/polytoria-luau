@@ -22,7 +22,7 @@ export declare class Player extends Instance {
 	// TODO: properties
 }
 
-declare class PlayerChatEvent {
+export declare class PlayerChatEvent {
 	Player: Player;
 	Message: string;
 	Canceled: boolean;

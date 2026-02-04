@@ -43,11 +43,11 @@
 
 ## Scripting
 
--   [ ] BaseScript
+-   [x] BaseScript
 -   [ ] LocalScript
 -   [ ] ModuleScript
 -   [ ] NetworkEvent
--   [ ] ScriptInstance
+-   [x] ScriptInstance
 
 ## Values
 
