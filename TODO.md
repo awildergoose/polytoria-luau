@@ -119,7 +119,7 @@
 -   [x] NetMessage
 -   [x] NumberRange
 -   [x] RayResult
--   [ ] Signal
+-   [x] Signal
 -   [x] Vector2
 -   [x] Vector3
 -   [x] Bounds
