@@ -34,5 +34,16 @@
             "\t$0",
             "}"
         ],
+    },
+    "dyninstancedef": {
+        "scope": "typescript",
+        "prefix": "dyninstancedef",
+        "body": [
+            "import type { DynamicInstance } from \"./dynamic_instance\";",
+            "",
+            "export declare class $1 extends DynamicInstance {",
+            "\t$0",
+            "}"
+        ],
     }
 }
