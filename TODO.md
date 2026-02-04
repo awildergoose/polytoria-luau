@@ -8,7 +8,7 @@
 -   [x] Game
 -   [x] Hidden
 -   [x] Lighting
--   [ ] Player
+-   [x] Player
 -   [x] PlayerDefaults
 -   [x] Players
 -   [x] ScriptService
