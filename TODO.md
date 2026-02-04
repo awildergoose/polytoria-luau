@@ -44,8 +44,8 @@
 ## Scripting
 
 -   [x] BaseScript
--   [ ] LocalScript
--   [ ] ModuleScript
+-   [x] LocalScript
+-   [x] ModuleScript
 -   [ ] NetworkEvent
 -   [x] ScriptInstance
 
