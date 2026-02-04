@@ -332,7 +332,21 @@ for (const c of ir.classes.values()) {
 }
 unemit(3);
 emit();
+emit();
 
+const bases = new Set();
+
+for (const c of ir.classes.values()) {
+	if (c.base) {
+		bases.add(c.base);
+	}
+}
+
+for (const b of bases) {
+	emit(`declare class ${b} end`);
+}
+
+emit();
 for (const e of ir.enums.values()) {
 	emit(`declare class ${e.name} extends EnumItem end`);
 	emit(`declare class ${e.name}_INTERNAL extends Enum`);
