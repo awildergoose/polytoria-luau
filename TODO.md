@@ -115,10 +115,10 @@
 
 -   [x] Color
 -   [x] ColorRange
--   [ ] Event
+-   [x] Event
 -   [x] NetMessage
 -   [x] NumberRange
--   [ ] RayResult
+-   [x] RayResult
 -   [ ] Signal
 -   [x] Vector2
 -   [x] Vector3
