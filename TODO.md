@@ -22,7 +22,7 @@
 -   [ ] NPC
 -   [x] Part
 -   [x] Seat
--   [ ] Text3D
+-   [x] Text3D
 -   [ ] Tool
 -   [x] Truss
 
