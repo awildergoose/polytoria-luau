@@ -9,6 +9,7 @@ import {
 	ExpressionStatement,
 	TypeNode,
 	TypeReferenceNode,
+	ParameterDeclaration,
 } from "ts-morph";
 import fs from "fs";
 
@@ -40,9 +41,14 @@ type IRProperty = {
 	optional: boolean;
 };
 
+type IRParameter = {
+	name: string;
+	type: string;
+};
+
 type IRMethod = {
 	name: string;
-	params: { name: string; type: string }[];
+	params: IRParameter[];
 	returns: string;
 };
 
@@ -90,6 +96,14 @@ function getOrDefault<K, V>(map: Map<K, V>, key: K, def: V): V {
 
 function typeNodeToName(t: TypeNode): string {
 	switch (t.getKind()) {
+		case SyntaxKind.FunctionType: {
+			const fn = t.asKindOrThrow(SyntaxKind.FunctionType);
+			const params = fn.getParameters().map(visitParameter).join(", ");
+			let returns = typeNodeToName(fn.getReturnTypeNodeOrThrow());
+			if (returns === "void") returns = "()";
+
+			return `(${params}) -> ${returns}`;
+		}
 		case SyntaxKind.ArrayType:
 			return `{ ${typeNodeToName(
 				t.asKindOrThrow(SyntaxKind.ArrayType).getElementTypeNode()
@@ -106,13 +120,22 @@ function typeNodeToName(t: TypeNode): string {
 		case SyntaxKind.AnyKeyword:
 			return t.getText();
 		default:
-			console.warn(`failed to handle ${t.getKindName()}: "${t.print()}"`);
+			console.warn(
+				`failed to handle type node ${t.getKindName()}: "${t.print()}"`
+			);
 			return t.getText();
 	}
 }
 
 function throwUnhandled(node: Node) {
 	throw new Error(`Unhandled node type: ${node.getKindName()}`);
+}
+
+function visitParameter(p: ParameterDeclaration) {
+	const name = p.getName();
+	const type = typeNodeToName(p.getTypeNodeOrThrow());
+
+	return `${name}: ${type}`;
 }
 
 function visitTypeReference(node: TypeReferenceNode) {
@@ -124,8 +147,32 @@ function visitTypeReference(node: TypeReferenceNode) {
 
 	if (typeArgs.length > 0) text += "<";
 	for (let typeArg of typeArgs) {
-		// TODO: prevent getText
-		let typeText = typeArg.getText();
+		let typeText;
+		switch (typeArg.getKind()) {
+			case SyntaxKind.TupleType: {
+				let tuple = typeArg.asKindOrThrow(SyntaxKind.TupleType);
+				typeText = tuple
+					.getElements()
+					.map((x) => typeNodeToName(x))
+					.join(", ");
+				break;
+			}
+			case SyntaxKind.TypeReference:
+			case SyntaxKind.NumberKeyword:
+			case SyntaxKind.VoidKeyword:
+			case SyntaxKind.BooleanKeyword:
+			case SyntaxKind.StringKeyword:
+			case SyntaxKind.AnyKeyword:
+				typeText = typeArg.getText();
+				break;
+			default:
+				console.warn(
+					`failed to handle type arg ${typeArg.getKindName()}: "${typeArg.print()}"`
+				);
+				typeText = typeArg.getText();
+				break;
+		}
+
 		if (typeText === "void") typeText = "";
 		text += typeText;
 	}
@@ -179,7 +226,7 @@ function visitClass(clazz: ClassDeclaration) {
 
 	for (const m of clazz.getMembers()) {
 		if (Node.isPropertyDeclaration(m)) {
-			let item = {
+			let item: IRProperty = {
 				name: m.getName(),
 				type: typeNodeToName(m.getTypeNodeOrThrow()),
 				optional: m.hasQuestionToken(),
@@ -198,13 +245,15 @@ function visitClass(clazz: ClassDeclaration) {
 		}
 
 		if (Node.isMethodDeclaration(m)) {
-			let item = {
+			let returns = typeNodeToName(m.getReturnTypeNodeOrThrow());
+			if (returns === "void") returns = "()";
+			let item: IRMethod = {
 				name: m.getName(),
 				params: m.getParameters().map((p) => ({
 					name: p.getName(),
 					type: typeNodeToName(p.getTypeNodeOrThrow()),
 				})),
-				returns: typeNodeToName(m.getReturnTypeNodeOrThrow()),
+				returns,
 			};
 
 			if (m.hasModifier(SyntaxKind.StaticKeyword)) {

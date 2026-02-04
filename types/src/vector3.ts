@@ -6,6 +6,10 @@ export declare class Vector3 {
 	sqrMagnitude: number;
 	normalized: number;
 
-	static New(x: number, y: number, z: number): Vector3;
+	static New(
+		x: number | undefined,
+		y: number | undefined,
+		z: number | undefined
+	): Vector3;
 	// TODO
 }
