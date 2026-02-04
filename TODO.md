@@ -57,7 +57,7 @@
 -   [x] InstanceValue
 -   [x] IntValue
 -   [x] NumberValue
--   [ ] StringValue
+-   [x] StringValue
 -   [x] ValueBase
 -   [ ] Vector3Value
 
