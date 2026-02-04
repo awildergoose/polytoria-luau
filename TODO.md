@@ -75,7 +75,7 @@
 -   [ ] UIHVLayout
 -   [ ] UIHorizontalLayout
 -   [ ] UIImage
--   [ ] UILabel
+-   [x] UILabel
 -   [ ] UITextInput
 -   [ ] UIVerticalLayout
 -   [x] UIView
