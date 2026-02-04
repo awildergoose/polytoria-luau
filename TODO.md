@@ -78,7 +78,7 @@
 -   [ ] UILabel
 -   [ ] UITextInput
 -   [ ] UIVerticalLayout
--   [ ] UIView
+-   [x] UIView
 
 ## Enums
 
