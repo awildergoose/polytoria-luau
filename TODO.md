@@ -16,7 +16,7 @@
 ## World
 
 -   [ ] Climbable
--   [ ] Folder
+-   [x] Folder
 -   [ ] MeshPart
 -   [ ] Model
 -   [ ] NPC
