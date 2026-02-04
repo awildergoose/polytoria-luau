@@ -68,7 +68,7 @@
 
 ## UI
 
--   [ ] GUI
+-   [x] GUI
 -   [ ] PlayerGUI
 -   [ ] UIButton
 -   [ ] UIField
