@@ -105,7 +105,7 @@
 ## Static Classes
 
 -   [x] Achievements
--   [ ] Chat
+-   [x] Chat
 -   [ ] CoreUI
 -   [ ] Datastore
 -   [ ] Http
