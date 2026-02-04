@@ -4,7 +4,7 @@
 
 -   [x] Backpack
 -   [x] Camera
--   [ ] Environment
+-   [x] Environment
 -   [x] Game
 -   [ ] Hidden
 -   [ ] Lighting
