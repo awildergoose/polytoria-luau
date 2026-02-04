@@ -98,7 +98,7 @@ function typeNodeToName(t: TypeNode): string {
 			return visitTypeReference(
 				t.asKindOrThrow(SyntaxKind.TypeReference)
 			);
-		case SyntaxKind.UnionType:
+		case SyntaxKind.UnionType: // TODO handle unions properly
 		case SyntaxKind.NumberKeyword:
 		case SyntaxKind.VoidKeyword:
 		case SyntaxKind.BooleanKeyword:
@@ -116,15 +116,15 @@ function throwUnhandled(node: Node) {
 }
 
 function visitTypeReference(node: TypeReferenceNode) {
-	// TODO: is this safe?
+	// TODO: prevent getText
 	const name = node.getTypeName().getText();
 	const typeArgs = node.getTypeArguments();
 
 	let text = name;
 
 	if (typeArgs.length > 0) text += "<";
-	// loop and do
 	for (let typeArg of typeArgs) {
+		// TODO: prevent getText
 		let typeText = typeArg.getText();
 		if (typeText === "void") typeText = "";
 		text += typeText;
@@ -171,6 +171,7 @@ function visitClass(clazz: ClassDeclaration) {
 	const name = clazz.getName();
 	if (!name) return;
 
+	// TODO: prevent getText
 	const base = clazz.getExtends()?.getExpression().getText();
 
 	const properties: IRProperty[] = [];
@@ -228,6 +229,7 @@ function visitClass(clazz: ClassDeclaration) {
 }
 
 function visitAlias(alias: TypeAliasDeclaration) {
+	// TODO: prevent getText
 	ir.aliases.set(alias.getName(), {
 		name: alias.getName(),
 		type: alias.getType().getText(),
@@ -243,7 +245,7 @@ function visitExpression(expression: ExpressionStatement) {
 			SyntaxKind.Identifier
 		);
 		if (identifier !== undefined) {
-			// TODO properly handle this
+			// TODO properly handle this and prevent getText
 			if (identifier.getText() === "raw_prefix") {
 				ir.prefix.push(
 					callExpression
