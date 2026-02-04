@@ -6,7 +6,7 @@
 -   [x] Camera
 -   [x] Environment
 -   [x] Game
--   [ ] Hidden
+-   [x] Hidden
 -   [ ] Lighting
 -   [ ] Player
 -   [ ] PlayerDefaults
