@@ -74,7 +74,7 @@
 -   [x] UIField
 -   [x] UIHVLayout
 -   [x] UIHorizontalLayout
--   [ ] UIImage
+-   [x] UIImage
 -   [x] UILabel
 -   [ ] UITextInput
 -   [x] UIVerticalLayout
