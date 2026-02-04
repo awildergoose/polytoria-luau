@@ -1,5 +1,5 @@
 import type { CameraMode } from "../enums";
-import type { Vector3 } from "../vector3";
+import type { Vector3 } from "../types/vector3";
 import type { Instance } from "./instance";
 
 export declare class Camera extends Instance {

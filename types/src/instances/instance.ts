@@ -1,4 +1,4 @@
-import type { Bounds } from "../bounds";
+import type { Bounds } from "../types/bounds";
 import type { Player } from "./player";
 
 export declare class Instance {
