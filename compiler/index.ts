@@ -444,7 +444,7 @@ for (const c of ir.classes.values()) {
 for (const c of ir.globalStaticClasses.values()) {
 	emit(`declare ${c.name}: {`);
 	for (const p of c.properties) {
-		emit(`\t${p.name}: ${lowerType(p.type)}${p.optional ? "?" : ""}`);
+		emit(`\t${p.name}: ${lowerType(p.type)}${p.optional ? "?" : ""},`);
 	}
 	for (const m of c.methods) {
 		const params = m.params
