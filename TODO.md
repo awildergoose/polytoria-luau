@@ -7,7 +7,7 @@
 -   [x] Environment
 -   [x] Game
 -   [x] Hidden
--   [ ] Lighting
+-   [x] Lighting
 -   [ ] Player
 -   [ ] PlayerDefaults
 -   [ ] Players
