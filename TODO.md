@@ -30,7 +30,7 @@
 
 -   [x] Decal
 -   [x] SkyBase
--   [ ] GradientSky
+-   [x] GradientSky
 -   [ ] ImageSky
 -   [ ] Particles
 -   [ ] PointLight
