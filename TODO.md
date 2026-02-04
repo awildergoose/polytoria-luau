@@ -72,7 +72,7 @@
 -   [x] PlayerGUI
 -   [x] UIButton
 -   [x] UIField
--   [ ] UIHVLayout
+-   [x] UIHVLayout
 -   [ ] UIHorizontalLayout
 -   [ ] UIImage
 -   [x] UILabel
