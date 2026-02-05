@@ -1,4 +1,5 @@
 export declare class Achievements {
+	/// Award a player!
 	Award(
 		userID: number,
 		achievementID: number,

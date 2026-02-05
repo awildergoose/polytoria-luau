@@ -46,6 +46,7 @@ type IRProperty = {
 	name: string;
 	type: string;
 	optional: boolean;
+	documentation: string;
 };
 
 type IRParameter = {
@@ -57,6 +58,7 @@ type IRMethod = {
 	name: string;
 	params: IRParameter[];
 	returns: string;
+	documentation: string;
 };
 
 type IRAlias = {
@@ -325,7 +327,9 @@ function visitClass(clazz: ClassDeclaration) {
 	const properties: IRProperty[] = [];
 	const methods: IRMethod[] = [];
 
-	for (const member of clazz.getMembers()) {
+	let upcomingDocumentation = "";
+
+	for (const member of clazz.getMembersWithComments()) {
 		if (Node.isPropertyDeclaration(member)) {
 			const propertyName = member.getName();
 			if (isLuaKeyword(propertyName)) {
@@ -337,6 +341,7 @@ function visitClass(clazz: ClassDeclaration) {
 				name: propertyName,
 				type: visitTypeNode(member.getTypeNodeOrThrow()),
 				optional: member.hasQuestionToken(),
+				documentation: upcomingDocumentation,
 			};
 
 			if (member.hasModifier(SyntaxKind.StaticKeyword)) {
@@ -349,9 +354,8 @@ function visitClass(clazz: ClassDeclaration) {
 			}
 
 			properties.push(item);
-		}
-
-		if (Node.isMethodDeclaration(member)) {
+			upcomingDocumentation = "";
+		} else if (Node.isMethodDeclaration(member)) {
 			let returns = visitReturnType(member);
 			const methodName = member.getName();
 			if (isLuaKeyword(methodName)) {
@@ -375,6 +379,7 @@ function visitClass(clazz: ClassDeclaration) {
 					};
 				}),
 				returns,
+				documentation: upcomingDocumentation,
 			};
 
 			if (member.hasModifier(SyntaxKind.StaticKeyword)) {
@@ -387,6 +392,18 @@ function visitClass(clazz: ClassDeclaration) {
 			}
 
 			methods.push(item);
+			upcomingDocumentation = "";
+		} else if (member.getKind() === SyntaxKind.SingleLineCommentTrivia) {
+			const text = member.getText();
+
+			if (text.startsWith("///")) {
+				upcomingDocumentation += text.slice(4);
+			}
+		} else {
+			console.warn(
+				`failed to handle class member ${member.getKindName()}: "${member.print()}"`
+			);
+			upcomingDocumentation = "";
 		}
 	}
 
@@ -432,6 +449,7 @@ function visitFunctionDeclaration(node: FunctionDeclaration) {
 			};
 		}),
 		returns,
+		documentation: "", // TODO
 	});
 }
 
@@ -565,9 +583,11 @@ emit("declare Enum: ENUM_LIST\n");
 for (const c of ir.classes.values()) {
 	emit(`declare class ${c.name}${c.base ? ` extends ${c.base}` : ""}`);
 	for (const p of c.properties) {
+		if (p.documentation !== "") emit(`\t--- ${p.documentation}`);
 		emit(`\t${p.name}: ${lowerType(p.type)}${p.optional ? "?" : ""}`);
 	}
 	for (const m of c.methods) {
+		if (m.documentation !== "") emit(`\t--- ${m.documentation}`);
 		const realParams = m.params
 			.map((p) => `${p.name}: ${lowerType(p.type)}`)
 			.join(", ");
@@ -580,9 +600,11 @@ for (const c of ir.classes.values()) {
 for (const c of ir.globalStaticClasses.values()) {
 	emit(`declare ${c.name}: {`);
 	for (const p of c.properties) {
+		if (p.documentation !== "") emit(`\t--- ${p.documentation}`);
 		emit(`\t${p.name}: ${lowerType(p.type)}${p.optional ? "?" : ""},`);
 	}
 	for (const m of c.methods) {
+		if (m.documentation !== "") emit(`\t--- ${m.documentation}`);
 		const params = m.params
 			.map((p) => `${p.name}: ${lowerType(p.type)}`)
 			.join(", ");
@@ -596,6 +618,7 @@ for (const fn of ir.methods) {
 	const params = fn.params
 		.map((p) => `${p.name}: ${lowerType(p.type)}`)
 		.join(", ");
+	if (fn.documentation !== "") emit(`\t--- ${fn.documentation}\n`);
 	emit(`declare function ${fn.name}(${params}): ${lowerType(fn.returns)}\n`);
 }
 
