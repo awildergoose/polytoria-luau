@@ -31,9 +31,23 @@ console.log(`Parsed IR in ${durationSec.toFixed(3)}s!`);
 
 const emitter = new CodeEmitter();
 
-const instantiables = new Set();
-const bases = new Set();
-const statics = new Set();
+emitter.emit(`
+declare class Enum
+end
+
+declare class EnumItem
+end
+
+export type Event<T... = ...any> = {
+    Connect: (self: Event<T...>, callback: (T...) -> ()) -> (),
+    Disconnect: (self: Event<T...>, callback: (T...) -> ()) -> (),
+}
+
+`);
+
+const instantiables: Set<string> = new Set();
+const bases: Set<string> = new Set();
+const statics: Set<[string, string]> = new Set();
 
 for (const c of ir.types.values()) {
 	if (c.BaseType) {
@@ -43,16 +57,15 @@ for (const c of ir.types.values()) {
 		instantiables.add(c.Name);
 	}
 	if (c.IsStatic) {
-		statics.add(c.StaticAlias || c.Name);
+		statics.add([c.StaticAlias || c.Name, c.Name]);
 	}
 }
 
 emitter.emit(
 	`type InstantiableClassName = ${Array.from(instantiables)
 		.map((n) => `"${n}"`)
-		.join(" | ")};`
+		.join(" | ")};\n`
 );
-emitter.emit();
 
 for (const b of bases) {
 	emitter.emit(`declare class ${b} end`);
@@ -60,8 +73,8 @@ for (const b of bases) {
 
 emitter.emit();
 
-for (const s of statics) {
-	emitter.emit(`declare ${s}: ${s}`);
+for (const enm of fullIR.enums) {
+	emitter.emitEnum(enm);
 }
 
 emitter.emit();
@@ -69,5 +82,13 @@ emitter.emit();
 for (const type of fullIR.types) {
 	emitter.emitType(type);
 }
+
+emitter.emit();
+
+for (const [a, c] of statics) {
+	emitter.emit(`declare ${a}: ${c}`);
+}
+
+emitter.emit();
 
 await Bun.file("generated/generated.d.luau").write(emitter.text);

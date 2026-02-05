@@ -1,4 +1,4 @@
-import type { IRType } from "./ir";
+import type { IREnum, IRType } from "./ir";
 
 export class CodeEmitter {
 	text = "";
@@ -9,6 +9,14 @@ export class CodeEmitter {
 		this.text += `${text}\n`;
 	}
 
+	emitEnum(enm: IREnum) {
+		this.emit(`declare class ${enm.Name} extends EnumItem end`);
+		this.emit(`declare class ${enm.InternalName} extends Enum`);
+		// TODO emit documentation
+		for (const o of enm.Options) this.emit(`\t${o.Name}: ${enm.Name}`);
+		this.emit(`end\n`);
+	}
+
 	emitType(type: IRType) {
 		this.emit(
 			`declare class ${type.Name}${
@@ -16,6 +24,11 @@ export class CodeEmitter {
 			}`
 		);
 
-		this.emit("}\n");
+		for (const event of type.Events) {
+			const args = event.Arguments.map((x) => x.Type).join(", ");
+			this.emit(`\t${event.Name}: Event<${args}>`);
+		}
+
+		this.emit("end\n");
 	}
 }

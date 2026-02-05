@@ -46,18 +46,13 @@ export const IREventArgumentsSchema = z.object({
 
 export const IREventSchema = z.object({
 	Name: z.string(),
-	Arguments: z
-		.union([
-			IREventArgumentsSchema,
-			z.array(IREventArgumentsSchema),
-			z.string(),
-		])
-		.transform((v) => {
-			if (v === "" || v === null || v === undefined) return [];
-			if (Array.isArray(v)) return v;
+	Arguments: z.preprocess((val) => {
+		if (typeof val === "string") return [];
+		if (val == null) return [];
+		if (Array.isArray(val)) return val;
 
-			return [v];
-		}),
+		return [val];
+	}, z.array(IREventArgumentsSchema)),
 	Description: z.string(),
 });
 
