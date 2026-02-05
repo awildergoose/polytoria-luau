@@ -114,7 +114,7 @@
 -   [x] Input
 -   [x] Insert
 -   [x] Json
--   [ ] Tween
+-   [x] Tween
 
 ## Types
 

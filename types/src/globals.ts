@@ -10,4 +10,5 @@ declare Http: Http
 declare Input: Input
 declare Insert: Insert
 declare json: Json
+declare Tween: Tween
 `);
