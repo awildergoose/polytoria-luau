@@ -38,7 +38,7 @@ export class CodeEmitter {
 				this.emit(`\t${event.Name}: Event<${args}>`);
 			}
 
-			if (type.Events.length > 0) this.emit();
+			if (type.Events.length > 0 && type.Methods.length > 0) this.emit();
 
 			for (const method of type.Methods) {
 				const args = [
@@ -54,7 +54,13 @@ export class CodeEmitter {
 				);
 			}
 
-			if (type.Methods.length > 0) this.emit();
+			if (
+				type.Methods.length > 0 &&
+				type.Properties.filter(
+					(x) => x.IsAccessibleByScripts && !x.IsStatic
+				).length > 0
+			)
+				this.emit();
 
 			for (const property of type.Properties) {
 				if (!property.IsAccessibleByScripts) continue;
