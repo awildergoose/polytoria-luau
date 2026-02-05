@@ -121,6 +121,13 @@ export class CodeEmitter {
 					"self",
 					...mergedParams.map((p) => `${p.name}: ${p.typeUnion}`),
 				].join(", ");
+				// TODO merge descriptions
+				this.emit(
+					`\t--- ${overloads[0]?.Description.replaceAll(
+						"\n",
+						"\n\t--- "
+					)}`
+				);
 				this.emit(`\tfunction ${methodName}(${args}): ${mergedReturn}`);
 			} else {
 				const args = mergedParams
