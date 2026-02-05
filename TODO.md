@@ -108,6 +108,8 @@
 -   [x] Chat
 -   [x] CoreUI
 -   [x] Datastore
+-   [x] Filter
+-   [x] Purchases
 -   [ ] Http
 -   [ ] Input
 -   [ ] Insert
