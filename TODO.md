@@ -110,7 +110,7 @@
 -   [x] Datastore
 -   [x] Filter
 -   [x] Purchases
--   [ ] Http
+-   [x] Http
 -   [ ] Input
 -   [ ] Insert
 -   [ ] Json
