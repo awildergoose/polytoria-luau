@@ -28,7 +28,7 @@ export declare class Tween {
 	): number;
 	static TweenNumber(
 		start: number,
-		end: number,
+		end_: number,
 		time: number,
 		callback: (value: number) => void,
 		tweenType: TweenType | undefined,
@@ -36,7 +36,7 @@ export declare class Tween {
 	): number;
 	static TweenColor(
 		start: Color,
-		end: Color,
+		end_: Color,
 		time: number,
 		callback: (value: Color) => void,
 		tweenType: TweenType | undefined,
@@ -44,7 +44,7 @@ export declare class Tween {
 	): number;
 	static TweenVector3(
 		start: Vector3,
-		end: Vector3,
+		end_: Vector3,
 		time: number,
 		callback: (value: Vector3) => void,
 		tweenType: TweenType | undefined,
@@ -52,7 +52,7 @@ export declare class Tween {
 	): number;
 	static TweenVector2(
 		start: Vector2,
-		end: Vector2,
+		end_: Vector2,
 		time: number,
 		callback: (value: Vector2) => void,
 		tweenType: TweenType | undefined,

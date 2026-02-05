@@ -81,6 +81,31 @@ const ir: IR = {
 	suffix: [],
 };
 
+const isLuaKeyword = (text: string) =>
+	[
+		"and",
+		"break",
+		"do",
+		"else",
+		"elseif",
+		"end",
+		"false",
+		"for",
+		"function",
+		"if",
+		"in",
+		"local",
+		"nil",
+		"not",
+		"or",
+		"repeat",
+		"return",
+		"then",
+		"true",
+		"until",
+		"while",
+	].includes(text);
+
 for (const sf of project.getSourceFiles()) {
 	if (sf.isDeclarationFile()) continue;
 	visitSourceFile(sf);
@@ -161,6 +186,10 @@ function visitParenthesizedType(node: ParenthesizedTypeNode) {
 
 function visitParameter(p: ParameterDeclaration) {
 	const name = p.getName();
+	if (isLuaKeyword(name)) {
+		console.error(`"${name}" is invalid, name is a lua keyword.`);
+	}
+
 	const type = visitTypeNode(p.getTypeNodeOrThrow());
 
 	return `${name}: ${type}`;
@@ -260,13 +289,25 @@ function visitSourceFile(file: SourceFile) {
 
 function visitEnum(enm: EnumDeclaration) {
 	const name = enm.getName();
-	const members = enm.getMembers().map((m) => m.getName());
+	if (isLuaKeyword(name)) {
+		console.error(`"${name}" is invalid, name is a lua keyword.`);
+	}
+	const members = enm.getMembers().map((m) => {
+		const name = m.getName();
+		if (isLuaKeyword(name)) {
+			console.error(`"${name}" is invalid, name is a lua keyword.`);
+		}
+		return name;
+	});
 	ir.enums.set(name, { name, members });
 }
 
 function visitClass(clazz: ClassDeclaration) {
 	const name = clazz.getName();
 	if (!name) return;
+	if (isLuaKeyword(name)) {
+		console.error(`"${name}" is invalid, name is a lua keyword.`);
+	}
 
 	// TODO: prevent getText
 	const base = clazz.getExtends()?.getExpression().getText();
@@ -276,8 +317,12 @@ function visitClass(clazz: ClassDeclaration) {
 
 	for (const m of clazz.getMembers()) {
 		if (Node.isPropertyDeclaration(m)) {
+			const name = m.getName();
+			if (isLuaKeyword(name)) {
+				console.error(`"${name}" is invalid, name is a lua keyword.`);
+			}
 			let item: IRProperty = {
-				name: m.getName(),
+				name,
 				type: visitTypeNode(m.getTypeNodeOrThrow()),
 				optional: m.hasQuestionToken(),
 			};
@@ -296,13 +341,25 @@ function visitClass(clazz: ClassDeclaration) {
 
 		if (Node.isMethodDeclaration(m)) {
 			let returns = visitReturnType(m);
+			const name = m.getName();
+			if (isLuaKeyword(name)) {
+				console.error(`"${name}" is invalid, name is a lua keyword.`);
+			}
 
 			let item: IRMethod = {
-				name: m.getName(),
-				params: m.getParameters().map((p) => ({
-					name: p.getName(),
-					type: visitTypeNode(p.getTypeNodeOrThrow()),
-				})),
+				name,
+				params: m.getParameters().map((p) => {
+					const name = p.getName();
+					if (isLuaKeyword(name)) {
+						console.error(
+							`"${name}" is invalid, name is a lua keyword.`
+						);
+					}
+					return {
+						name,
+						type: visitTypeNode(p.getTypeNodeOrThrow()),
+					};
+				}),
 				returns,
 			};
 
@@ -328,8 +385,14 @@ function visitClass(clazz: ClassDeclaration) {
 }
 
 function visitAlias(alias: TypeAliasDeclaration) {
-	ir.aliases.set(alias.getName(), {
-		name: alias.getName(),
+	const name = alias.getName();
+
+	if (isLuaKeyword(name)) {
+		console.error(`"${name}" is invalid, name is a lua keyword.`);
+	}
+
+	ir.aliases.set(name, {
+		name,
 		type: visitTypeNode(alias.getTypeNodeOrThrow()),
 	});
 }
