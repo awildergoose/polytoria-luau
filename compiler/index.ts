@@ -17,6 +17,7 @@ import {
 } from "ts-morph";
 import fs from "fs";
 
+// TODO: flatten IR to a simple array?
 type IR = {
 	enums: Map<string, IREnum>;
 	classes: Map<string, IRClass>;
