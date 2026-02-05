@@ -32,7 +32,7 @@
 -   [x] SkyBase
 -   [x] GradientSky
 -   [x] ImageSky
--   [ ] Particles
+-   [x] Particles
 -   [x] PointLight
 -   [x] Sound
 -   [x] SpotLight
