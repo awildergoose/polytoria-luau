@@ -11,6 +11,9 @@ import {
 	TypeReferenceNode,
 	ParameterDeclaration,
 	FunctionTypeNode,
+	UnionTypeNode,
+	ParenthesizedTypeNode,
+	MethodDeclaration,
 } from "ts-morph";
 import fs from "fs";
 
@@ -95,31 +98,41 @@ function getOrDefault<K, V>(map: Map<K, V>, key: K, def: V): V {
 	return map.get(key)!;
 }
 
-function typeNodeToName(t: TypeNode): string {
+function visitTypeNode(t: TypeNode): string {
 	switch (t.getKind()) {
 		case SyntaxKind.FunctionType: {
 			const fn = t.asKindOrThrow(SyntaxKind.FunctionType);
 			const params = fn.getParameters().map(visitParameter).join(", ");
-			let returns = typeNodeToName(fn.getReturnTypeNodeOrThrow());
-			if (returns === "void") returns = "()";
+			let returns = visitReturnType(fn);
 
 			return `(${params}) -> ${returns}`;
 		}
 		case SyntaxKind.ArrayType:
-			return `{ ${typeNodeToName(
+			return `{ ${visitTypeNode(
 				t.asKindOrThrow(SyntaxKind.ArrayType).getElementTypeNode()
 			)} }`;
 		case SyntaxKind.TypeReference:
 			return visitTypeReference(
 				t.asKindOrThrow(SyntaxKind.TypeReference)
 			);
-		case SyntaxKind.UnionType: // TODO handle unions properly
+		case SyntaxKind.UnionType:
+			return visitUnionType(t.asKindOrThrow(SyntaxKind.UnionType));
+		case SyntaxKind.ParenthesizedType:
+			return visitParenthesizedType(
+				t.asKindOrThrow(SyntaxKind.ParenthesizedType)
+			);
 		case SyntaxKind.NumberKeyword:
 		case SyntaxKind.VoidKeyword:
 		case SyntaxKind.BooleanKeyword:
 		case SyntaxKind.StringKeyword:
 		case SyntaxKind.AnyKeyword:
 			return t.getText();
+		case SyntaxKind.LiteralType:
+			// TODO: prevent getText?
+			return t
+				.asKindOrThrow(SyntaxKind.LiteralType)
+				.getLiteral()
+				.getText();
 		case SyntaxKind.UndefinedKeyword:
 			return "nil";
 		default:
@@ -134,18 +147,39 @@ function throwUnhandled(node: Node) {
 	throw new Error(`Unhandled node type: ${node.getKindName()}`);
 }
 
-function visitReturnType(fn: FunctionTypeNode) {
-	let returns = typeNodeToName(fn.getReturnTypeNodeOrThrow());
+function visitReturnType(fn: FunctionTypeNode | MethodDeclaration) {
+	let returns = visitTypeNode(fn.getReturnTypeNodeOrThrow());
 	if (returns === "void") returns = "()";
 
 	return returns;
 }
 
+function visitParenthesizedType(node: ParenthesizedTypeNode) {
+	return `(${visitTypeNode(node.getTypeNode())})`;
+}
+
 function visitParameter(p: ParameterDeclaration) {
 	const name = p.getName();
-	const type = typeNodeToName(p.getTypeNodeOrThrow());
+	const type = visitTypeNode(p.getTypeNodeOrThrow());
 
 	return `${name}: ${type}`;
+}
+
+function visitUnionType(node: UnionTypeNode) {
+	const types = node.getTypeNodes();
+
+	if (
+		types.length === 2 &&
+		types.some((t) => t.getKind() === SyntaxKind.UndefinedKeyword)
+	) {
+		const realType = types.find(
+			(t) => t.getKind() !== SyntaxKind.UndefinedKeyword
+		)!;
+
+		return `${visitTypeNode(realType)}?`;
+	}
+
+	return types.map((t) => visitTypeNode(t)).join(" | ");
 }
 
 function visitTypeReference(node: TypeReferenceNode) {
@@ -153,7 +187,7 @@ function visitTypeReference(node: TypeReferenceNode) {
 	const name = node.getTypeName().getText();
 	const typeArgs = node.getTypeArguments();
 
-	// TODO: prevent getText
+	// TODO: prevent getText and rename to LuaTuple
 	if (typeArgs.length > 0 && node.getText().startsWith("Tuple")) {
 		return `(${typeArgs.map((x) => x.getText()).join(", ")})`;
 	}
@@ -168,7 +202,7 @@ function visitTypeReference(node: TypeReferenceNode) {
 				let tuple = typeArg.asKindOrThrow(SyntaxKind.TupleType);
 				typeText = tuple
 					.getElements()
-					.map((x) => typeNodeToName(x))
+					.map((x) => visitTypeNode(x))
 					.join(", ");
 				break;
 			}
@@ -243,7 +277,7 @@ function visitClass(clazz: ClassDeclaration) {
 		if (Node.isPropertyDeclaration(m)) {
 			let item: IRProperty = {
 				name: m.getName(),
-				type: typeNodeToName(m.getTypeNodeOrThrow()),
+				type: visitTypeNode(m.getTypeNodeOrThrow()),
 				optional: m.hasQuestionToken(),
 			};
 
@@ -260,14 +294,13 @@ function visitClass(clazz: ClassDeclaration) {
 		}
 
 		if (Node.isMethodDeclaration(m)) {
-			let returns = typeNodeToName(m.getReturnTypeNodeOrThrow());
-			if (returns === "void") returns = "()";
+			let returns = visitReturnType(m);
 
 			let item: IRMethod = {
 				name: m.getName(),
 				params: m.getParameters().map((p) => ({
 					name: p.getName(),
-					type: typeNodeToName(p.getTypeNodeOrThrow()),
+					type: visitTypeNode(p.getTypeNodeOrThrow()),
 				})),
 				returns,
 			};
@@ -296,7 +329,7 @@ function visitClass(clazz: ClassDeclaration) {
 function visitAlias(alias: TypeAliasDeclaration) {
 	ir.aliases.set(alias.getName(), {
 		name: alias.getName(),
-		type: typeNodeToName(alias.getTypeNodeOrThrow()),
+		type: visitTypeNode(alias.getTypeNodeOrThrow()),
 	});
 }
 

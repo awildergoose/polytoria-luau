@@ -15,6 +15,11 @@ declare global {
 		): void;
 	};
 
+	type Signal = {
+		Invoked: Event<?>;
+		Invoke(self: Signal<?>, ...args: any): void;
+	};
+
 	/**
 	 * Emits luau code to the start of the file
 	 * @param code The code to emit
