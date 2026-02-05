@@ -80,15 +80,21 @@ for (const enm of fullIR.enums) {
 emitter.emit();
 
 for (const type of fullIR.types) {
-	emitter.emitType(type);
+	emitter.emitType(type, false);
 }
 
 emitter.emit();
+
+for (const type of fullIR.types) {
+	if (
+		type.Methods.find((v) => v.IsStatic) ||
+		type.Properties.find((v) => v.IsStatic)
+	)
+		emitter.emitType(type, true);
+}
 
 for (const [a, c] of statics) {
 	emitter.emit(`declare ${a}: ${c}`);
 }
-
-emitter.emit();
 
 await Bun.file("generated/generated.d.luau").write(emitter.text);
