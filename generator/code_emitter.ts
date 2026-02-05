@@ -116,15 +116,15 @@ export class CodeEmitter {
 			}
 			const mergedReturn = unionize(returnTypes);
 
-			this.emit(
-				`\t--- ${Array.from(
-					new Set(
-						overloads.map((o) =>
-							o.Description.replaceAll("\n", "\n\t--- ")
-						)
-					)
-				).join("\n\t--- ")}`
-			);
+			// this.emit(
+			// 	`\t--- ${Array.from(
+			// 		new Set(
+			// 			overloads.map((o) =>
+			// 				o.Description.replaceAll("\n", "\n\t--- ")
+			// 			)
+			// 		)
+			// 	).join("\n\t--- ")}`
+			// );
 
 			if (!isStaticPass) {
 				const args = [

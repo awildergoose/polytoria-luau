@@ -1,7 +1,8 @@
 import { YAML } from "bun";
 import { readdir } from "node:fs/promises";
 import { IREnumSchema, IRTypeSchema, IRSchema, type IR } from "./ir";
-import { CodeEmitter } from "./emitter";
+import { CodeEmitter } from "./code_emitter";
+import { DocsEmitter } from "./docs_emitter";
 
 const ROOT = `${__dirname}/../docs-site/yaml`;
 const ENUMS = `${ROOT}/enums`;
@@ -114,6 +115,20 @@ for (const [a, c] of statics) {
 	emitter.emit(`declare ${a}: ${c}`);
 }
 
-console.log(`Emitted in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`);
+console.log(
+	`Emitted code in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`
+);
 
 await Bun.file("generated/generated.d.luau").write(emitter.text);
+start = Bun.nanoseconds();
+
+const docsEmitter = new DocsEmitter();
+for (const enm of fullIR.enums) docsEmitter.emitEnum(enm);
+for (const type of fullIR.types) docsEmitter.emitType(type);
+
+console.log(
+	`Emitted docs in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`
+);
+await Bun.file("generated/generated.docs.json").write(
+	JSON.stringify(docsEmitter.output, null, 4)
+);

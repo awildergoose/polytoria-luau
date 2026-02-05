@@ -8,7 +8,7 @@
         "@polytoria": "./generated/generated.d.luau"
     },
     "luau-lsp.types.documentationFiles": [
-        "./docs/polytoria.docs.json"
+        "./generated/generated.docs.json"
     ],
     "luau-lsp.platform.type": "standard",
     "json.schemas": [
