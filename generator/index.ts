@@ -9,7 +9,7 @@ const TYPES = `${ROOT}/types`;
 
 const ir: IR = { enums: [], types: [] };
 
-const start = Bun.nanoseconds();
+let start = Bun.nanoseconds();
 
 const enumFiles = await readdir(`${ENUMS}`, { recursive: true });
 for (const file of enumFiles) {
@@ -26,24 +26,10 @@ for (const file of typeFiles) {
 }
 
 const fullIR = IRSchema.parse(ir);
-const durationSec = (Bun.nanoseconds() - start) / 1e9;
-console.log(`Parsed IR in ${durationSec.toFixed(3)}s!`);
+console.log(`Parsed IR in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`);
+start = Bun.nanoseconds();
 
 const emitter = new CodeEmitter();
-
-emitter.emit(`
-declare class Enum
-end
-
-declare class EnumItem
-end
-
-export type Event<T... = ...any> = {
-    Connect: (self: Event<T...>, callback: (T...) -> ()) -> (),
-    Disconnect: (self: Event<T...>, callback: (T...) -> ()) -> (),
-}
-
-`);
 
 const instantiables: Set<string> = new Set();
 const bases: Set<string> = new Set();
@@ -60,6 +46,29 @@ for (const c of ir.types.values()) {
 		statics.add([c.StaticAlias || c.Name, c.Name]);
 	}
 }
+
+emitter.emit(
+	`--#METADATA#{"CREATABLE_INSTANCES":[${Array.from(instantiables)
+		.map((a) => `"${a}"`)
+		.join(", ")}], "SERVICES": [${Array.from(statics)
+		.map((a) => a[0])
+		.map((a) => `"${a}"`)
+		.join(", ")}]}`
+);
+
+emitter.emit(`
+declare class Enum
+end
+
+declare class EnumItem
+end
+
+export type Event<T... = ...any> = {
+    Connect: (self: Event<T...>, callback: (T...) -> ()) -> (),
+    Disconnect: (self: Event<T...>, callback: (T...) -> ()) -> (),
+}
+
+`);
 
 emitter.emit(
 	`type InstantiableClassName = ${Array.from(instantiables)
@@ -96,5 +105,7 @@ for (const type of fullIR.types) {
 for (const [a, c] of statics) {
 	emitter.emit(`declare ${a}: ${c}`);
 }
+
+console.log(`Emitted in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`);
 
 await Bun.file("generated/generated.d.luau").write(emitter.text);

@@ -116,18 +116,21 @@ export class CodeEmitter {
 			}
 			const mergedReturn = unionize(returnTypes);
 
+			this.emit(
+				`\t--- ${Array.from(
+					new Set(
+						overloads.map((o) =>
+							o.Description.replaceAll("\n", "\n\t--- ")
+						)
+					)
+				).join("\n\t--- ")}`
+			);
+
 			if (!isStaticPass) {
 				const args = [
 					"self",
 					...mergedParams.map((p) => `${p.name}: ${p.typeUnion}`),
 				].join(", ");
-				// TODO merge descriptions
-				this.emit(
-					`\t--- ${overloads[0]?.Description.replaceAll(
-						"\n",
-						"\n\t--- "
-					)}`
-				);
 				this.emit(`\tfunction ${methodName}(${args}): ${mergedReturn}`);
 			} else {
 				const args = mergedParams
