@@ -113,7 +113,7 @@
 -   [x] Http
 -   [x] Input
 -   [x] Insert
--   [ ] Json
+-   [x] Json
 -   [ ] Tween
 
 ## Types

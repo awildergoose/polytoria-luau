@@ -1,5 +1,6 @@
 import type { RayResult } from "../types/ray_result";
 import type { Vector3 } from "../types/vector3";
+import type { Instance } from "./instance";
 
 type KeyCode = string;
 
@@ -17,11 +18,11 @@ export declare class Input {
 	static ViewportToScreenPoint(pos: Vector3): Vector3;
 	static ScreenPointToRay(
 		pos: Vector3,
-		ignoreList: {} | undefined
+		ignoreList: Instance[] | undefined
 	): RayResult | undefined;
 	static ViewportPointToRay(
 		pos: Vector3,
-		ignoreList: {} | undefined
+		ignoreList: Instance[] | undefined
 	): RayResult | undefined;
 	static GetButton(buttonName: string): boolean;
 	static GetButtonDown(buttonName: string): boolean;

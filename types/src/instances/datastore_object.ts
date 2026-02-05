@@ -12,11 +12,15 @@ export declare class DatastoreObject {
 	Set(
 		key: string,
 		value: any,
-		callback: ((success: boolean, error: string | null) => void) | undefined
+		callback:
+			| ((success: boolean, error: string | undefined) => void)
+			| undefined
 	): void;
 	Remove(
 		key: string,
-		callback: ((success: boolean, error: string | null) => void) | undefined
+		callback:
+			| ((success: boolean, error: string | undefined) => void)
+			| undefined
 	): void;
 
 	Key: string;
