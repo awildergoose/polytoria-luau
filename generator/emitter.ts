@@ -78,7 +78,8 @@ export class CodeEmitter {
 			if (
 				type.Properties.filter(
 					(v) => v.IsAccessibleByScripts && v.IsStatic
-				).length > 0
+				).length > 0 &&
+				type.Methods.length > 0
 			)
 				this.emit();
 
