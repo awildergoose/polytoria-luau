@@ -116,17 +116,9 @@ export class CodeEmitter {
 			}
 			const mergedReturn = unionize(returnTypes);
 
-			// this.emit(
-			// 	`\t--- ${Array.from(
-			// 		new Set(
-			// 			overloads.map((o) =>
-			// 				o.Description.replaceAll("\n", "\n\t--- ")
-			// 			)
-			// 		)
-			// 	).join("\n\t--- ")}`
-			// );
-
 			if (!isStaticPass) {
+				if (overloads.some((o) => o.IsObsolete))
+					this.emit("\t@deprecated");
 				const args = [
 					"self",
 					...mergedParams.map((p) => `${p.name}: ${p.typeUnion}`),
@@ -163,6 +155,7 @@ export class CodeEmitter {
 			for (const property of type.Properties) {
 				if (!property.IsAccessibleByScripts) continue;
 				if (!property.IsStatic) continue;
+
 				this.emit(
 					`\t${property.Name}: ${CodeEmitter.resolveType(
 						property.Type

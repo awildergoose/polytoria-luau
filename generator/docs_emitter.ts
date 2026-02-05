@@ -98,6 +98,27 @@ export class DocsEmitter {
         "@roblox/globaltype/AudioFlanger.GetConnectedWires/return/0": {
             "documentation": ""
         },
+        "@roblox/globaltype/AudioFlanger.WiringChanged.Connect": {
+            "documentation": "Connects the given function to the event and returns an <code>RBXScriptConnection</code> that represents it.",
+            "learn_more_link": "https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal#Connect",
+            "params": [
+            {
+                "name": "self",
+                "documentation": "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/0"
+            },
+            {
+                "name": "func",
+                "documentation": "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/1"
+            }
+            ],
+            "returns": []
+        },
+        "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/0": {
+            "documentation": "An object that runs connected functions upon a specific occurrence."
+        },
+        "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/1": {
+            "documentation": ""
+        },
         */
 	}
 }
