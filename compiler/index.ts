@@ -14,6 +14,7 @@ import {
 	UnionTypeNode,
 	ParenthesizedTypeNode,
 	MethodDeclaration,
+	FunctionDeclaration,
 } from "ts-morph";
 import fs from "fs";
 
@@ -23,6 +24,7 @@ type IR = {
 	classes: Map<string, IRClass>;
 	aliases: Map<string, IRAlias>;
 	globalStaticClasses: Map<string, IRGlobalStaticClass>;
+	methods: IRMethod[];
 	prefix: string[];
 	suffix: string[];
 };
@@ -77,6 +79,7 @@ const ir: IR = {
 	classes: new Map(),
 	aliases: new Map(),
 	globalStaticClasses: new Map(),
+	methods: [],
 	prefix: [],
 	suffix: [],
 };
@@ -173,7 +176,9 @@ function throwUnhandled(node: Node) {
 	throw new Error(`Unhandled node type: ${node.getKindName()}`);
 }
 
-function visitReturnType(fn: FunctionTypeNode | MethodDeclaration) {
+function visitReturnType(
+	fn: FunctionTypeNode | MethodDeclaration | FunctionDeclaration
+) {
 	let returns = visitTypeNode(fn.getReturnTypeNodeOrThrow());
 	if (returns === "void") returns = "()";
 
@@ -276,6 +281,11 @@ function visitSourceFile(file: SourceFile) {
 				break;
 			case SyntaxKind.TypeAliasDeclaration:
 				visitAlias(node.asKindOrThrow(SyntaxKind.TypeAliasDeclaration));
+				break;
+			case SyntaxKind.FunctionDeclaration:
+				visitFunctionDeclaration(
+					node.asKindOrThrow(SyntaxKind.FunctionDeclaration)
+				);
 				break;
 			case SyntaxKind.EndOfFileToken:
 			case SyntaxKind.ImportDeclaration:
@@ -398,6 +408,30 @@ function visitAlias(alias: TypeAliasDeclaration) {
 	ir.aliases.set(name, {
 		name,
 		type: visitTypeNode(alias.getTypeNodeOrThrow()),
+	});
+}
+
+function visitFunctionDeclaration(node: FunctionDeclaration) {
+	let returns = visitReturnType(node);
+	const methodName = node.getName()!;
+
+	if (isLuaKeyword(methodName)) {
+		console.error(`"${methodName}" is invalid, name is a lua keyword.`);
+	}
+
+	ir.methods.push({
+		name: methodName,
+		params: node.getParameters().map((p) => {
+			const name = p.getName();
+			if (isLuaKeyword(name)) {
+				console.error(`"${name}" is invalid, name is a lua keyword.`);
+			}
+			return {
+				name,
+				type: visitTypeNode(p.getTypeNodeOrThrow()),
+			};
+		}),
+		returns,
 	});
 }
 
@@ -555,6 +589,14 @@ for (const c of ir.globalStaticClasses.values()) {
 		emit(`\t${m.name}: (${params}) -> ${lowerType(m.returns)},`);
 	}
 	emit(`}\n`);
+}
+
+for (const fn of ir.methods) {
+	// declare function name(param: type): returns
+	const params = fn.params
+		.map((p) => `${p.name}: ${lowerType(p.type)}`)
+		.join(", ");
+	emit(`declare function ${fn.name}(${params}): ${lowerType(fn.returns)}\n`);
 }
 
 for (const s of ir.suffix) emit(s);

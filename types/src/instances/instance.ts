@@ -13,8 +13,8 @@ export declare class Instance {
 	Clone(): Instance;
 	Destroy(): void;
 	Delete(): void;
-	GetParent(): Instance;
-	SetParent(newParent: Instance): void;
+	GetParent(): Instance | undefined;
+	SetParent(newParent: Instance | undefined): void;
 	IsA(className: ClassName): boolean;
 	IsDescendantOf(other: Instance): boolean;
 	FindChild(name: string): Instance | undefined;
@@ -27,7 +27,7 @@ export declare class Instance {
 	ClassName: ClassName;
 	Item: Instance;
 	Name: string;
-	Parent: Instance;
+	Parent: Instance | undefined;
 	Shared: any;
 	ClientSpawned: boolean;
 

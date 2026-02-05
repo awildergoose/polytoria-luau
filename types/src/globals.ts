@@ -11,3 +11,6 @@ declare Insert: Insert
 declare json: Json
 declare Tween: Tween
 `);
+
+export declare function wait(n: number | undefined): number;
+export declare function spawn(callback: (dt: number, gt: number) => void): void;
