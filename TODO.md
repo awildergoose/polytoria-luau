@@ -107,7 +107,7 @@
 -   [x] Achievements
 -   [x] Chat
 -   [x] CoreUI
--   [ ] Datastore
+-   [x] Datastore
 -   [ ] Http
 -   [ ] Input
 -   [ ] Insert
@@ -127,3 +127,4 @@
 -   [x] Bounds
 -   [x] Quaternion
 -   [x] AnimationInfo
+-   [x] DatastoreObject
