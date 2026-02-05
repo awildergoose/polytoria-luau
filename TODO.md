@@ -19,7 +19,7 @@
 -   [x] Folder
 -   [x] MeshPart
 -   [x] Model
--   [ ] NPC
+-   [x] NPC
 -   [x] Part
 -   [x] Seat
 -   [x] Text3D
