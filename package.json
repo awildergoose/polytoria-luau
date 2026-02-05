@@ -10,9 +10,11 @@
         "typescript": "^5"
     },
     "dependencies": {
-        "ts-morph": "^27.0.2"
+        "ts-morph": "^27.0.2",
+        "zod": "^4.3.6"
     },
     "scripts": {
-        "compile": "bun run compiler/index.ts"
+        "compile": "bun run compiler/index.ts",
+        "generate": "bun run generator/index.ts"
     }
 }
