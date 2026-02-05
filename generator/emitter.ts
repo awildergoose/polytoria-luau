@@ -1,14 +1,18 @@
-import type { IREnum, IRType } from "./ir";
+import type { IREnum, IRParameter, IRType } from "./ir";
 
 export class CodeEmitter {
 	text = "";
 
 	super() {}
 
-	resolveType(type: string): string {
+	static resolveType(type: string): string {
 		// TODO: resolve function and table types properly if possible
 		if (type === "function" || type === "table") type = "any";
 		return type;
+	}
+
+	static resolveParameter(p: IRParameter) {
+		return `${p.Name}: ${CodeEmitter.resolveType(p.Type)}`;
 	}
 
 	emit(text = "") {
@@ -43,9 +47,7 @@ export class CodeEmitter {
 			for (const method of type.Methods) {
 				const args = [
 					"self",
-					...method.Parameters.map(
-						(p) => `${p.Name}: ${this.resolveType(p.Type)}`
-					),
+					...method.Parameters.map(CodeEmitter.resolveParameter),
 				].join(", ");
 				this.emit(
 					`\tfunction ${method.Name}(${args}): ${
@@ -65,17 +67,20 @@ export class CodeEmitter {
 			for (const property of type.Properties) {
 				if (!property.IsAccessibleByScripts) continue;
 				if (property.IsStatic) continue;
+
 				this.emit(
-					`\t${property.Name}: ${this.resolveType(property.Type)}`
+					`\t${property.Name}: ${CodeEmitter.resolveType(
+						property.Type
+					)}`
 				);
 			}
 		} else {
 			for (const method of type.Methods) {
 				const args = method.Parameters.map(
-					(p) => `${p.Name}: ${this.resolveType(p.Type)}`
+					CodeEmitter.resolveParameter
 				).join(", ");
 				this.emit(
-					`\t${method.Name}: (${args}) -> ${this.resolveType(
+					`\t${method.Name}: (${args}) -> ${CodeEmitter.resolveType(
 						method.ReturnType || "nil"
 					)},`
 				);
@@ -93,7 +98,9 @@ export class CodeEmitter {
 				if (!property.IsAccessibleByScripts) continue;
 				if (!property.IsStatic) continue;
 				this.emit(
-					`\t${property.Name}: ${this.resolveType(property.Type)},`
+					`\t${property.Name}: ${CodeEmitter.resolveType(
+						property.Type
+					)},`
 				);
 			}
 		}
