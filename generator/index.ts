@@ -67,7 +67,6 @@ export type Event<T... = ...any> = {
     Connect: (self: Event<T...>, callback: (T...) -> ()) -> (),
     Disconnect: (self: Event<T...>, callback: (T...) -> ()) -> (),
 }
-
 `);
 
 emitter.emit(
@@ -85,6 +84,15 @@ emitter.emit();
 for (const enm of fullIR.enums) {
 	emitter.emitEnum(enm);
 }
+
+emitter.emit();
+
+emitter.emit("type ENUM_LIST = {");
+for (const enm of fullIR.enums) {
+	emitter.emit(`${enm.Name}: ${enm.InternalName},`);
+}
+emitter.emit("}");
+emitter.emit("declare Enum: ENUM_LIST");
 
 emitter.emit();
 
