@@ -1,20 +1,12 @@
 export declare class Http {
-	static Get(
+	Get(
 		url: string,
 		callback:
 			| ((data: any, error: boolean, message: string | undefined) => void)
 			| undefined,
 		headers: any
 	): void;
-	static Post(
-		url: string,
-		body: string,
-		callback:
-			| ((data: any, error: boolean, message: string | undefined) => void)
-			| undefined,
-		headers: any
-	): void;
-	static Put(
+	Post(
 		url: string,
 		body: string,
 		callback:
@@ -22,14 +14,22 @@ export declare class Http {
 			| undefined,
 		headers: any
 	): void;
-	static Delete(
+	Put(
+		url: string,
+		body: string,
+		callback:
+			| ((data: any, error: boolean, message: string | undefined) => void)
+			| undefined,
+		headers: any
+	): void;
+	Delete(
 		url: string,
 		callback:
 			| ((data: any, error: boolean, message: string | undefined) => void)
 			| undefined,
 		headers: any
 	): void;
-	static Patch(
+	Patch(
 		url: string,
 		body: string,
 		callback:

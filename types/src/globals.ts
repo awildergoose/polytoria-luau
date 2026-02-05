@@ -1,7 +1,7 @@
 // TODO
 raw_suffix(`
 declare game: Game
-declare script: Instance
+declare script: BaseScript
 declare Achievements: Achievements
 declare Chat: Chat
 declare CoreUI: CoreUI

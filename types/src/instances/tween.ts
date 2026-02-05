@@ -5,28 +5,28 @@ import type { Vector3 } from "../types/vector3";
 import type { DynamicInstance } from "./dynamic_instance";
 
 export declare class Tween {
-	static TweenPosition(
+	TweenPosition(
 		target: DynamicInstance,
 		destination: Vector3,
 		time: number,
 		tweenType: TweenType | undefined,
 		callback: (() => void) | undefined
 	): number;
-	static TweenRotation(
+	TweenRotation(
 		target: DynamicInstance,
 		destination: Vector3,
 		time: number,
 		tweenType: TweenType | undefined,
 		callback: (() => void) | undefined
 	): number;
-	static TweenSize(
+	TweenSize(
 		target: DynamicInstance,
 		destination: Vector3,
 		time: number,
 		tweenType: TweenType | undefined,
 		callback: (() => void) | undefined
 	): number;
-	static TweenNumber(
+	TweenNumber(
 		start: number,
 		end_: number,
 		time: number,
@@ -34,7 +34,7 @@ export declare class Tween {
 		tweenType: TweenType | undefined,
 		completeCallback: (() => void) | undefined
 	): number;
-	static TweenColor(
+	TweenColor(
 		start: Color,
 		end_: Color,
 		time: number,
@@ -42,7 +42,7 @@ export declare class Tween {
 		tweenType: TweenType | undefined,
 		completeCallback: (() => void) | undefined
 	): number;
-	static TweenVector3(
+	TweenVector3(
 		start: Vector3,
 		end_: Vector3,
 		time: number,
@@ -50,7 +50,7 @@ export declare class Tween {
 		tweenType: TweenType | undefined,
 		completeCallback: (() => void) | undefined
 	): number;
-	static TweenVector2(
+	TweenVector2(
 		start: Vector2,
 		end_: Vector2,
 		time: number,
@@ -58,9 +58,9 @@ export declare class Tween {
 		tweenType: TweenType | undefined,
 		completeCallback: (() => void) | undefined
 	): number;
-	static Cancel(id: number, callOnComplete: boolean | undefined): void;
-	static CancelAll(callOnComplete: boolean | undefined): void;
-	static Pause(id: number): void;
-	static Resume(id: number): void;
-	static IsPaused(id: number): boolean;
+	Cancel(id: number, callOnComplete: boolean | undefined): void;
+	CancelAll(callOnComplete: boolean | undefined): void;
+	Pause(id: number): void;
+	Resume(id: number): void;
+	IsPaused(id: number): boolean;
 }

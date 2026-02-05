@@ -303,10 +303,10 @@ function visitEnum(enm: EnumDeclaration) {
 }
 
 function visitClass(clazz: ClassDeclaration) {
-	const name = clazz.getName();
-	if (!name) return;
-	if (isLuaKeyword(name)) {
-		console.error(`"${name}" is invalid, name is a lua keyword.`);
+	const className = clazz.getName();
+	if (!className) return;
+	if (isLuaKeyword(className)) {
+		console.error(`"${className}" is invalid, name is a lua keyword.`);
 	}
 
 	// TODO: prevent getText
@@ -315,21 +315,23 @@ function visitClass(clazz: ClassDeclaration) {
 	const properties: IRProperty[] = [];
 	const methods: IRMethod[] = [];
 
-	for (const m of clazz.getMembers()) {
-		if (Node.isPropertyDeclaration(m)) {
-			const name = m.getName();
-			if (isLuaKeyword(name)) {
-				console.error(`"${name}" is invalid, name is a lua keyword.`);
+	for (const member of clazz.getMembers()) {
+		if (Node.isPropertyDeclaration(member)) {
+			const propertyName = member.getName();
+			if (isLuaKeyword(propertyName)) {
+				console.error(
+					`"${propertyName}" is invalid, name is a lua keyword.`
+				);
 			}
 			let item: IRProperty = {
-				name,
-				type: visitTypeNode(m.getTypeNodeOrThrow()),
-				optional: m.hasQuestionToken(),
+				name: propertyName,
+				type: visitTypeNode(member.getTypeNodeOrThrow()),
+				optional: member.hasQuestionToken(),
 			};
 
-			if (m.hasModifier(SyntaxKind.StaticKeyword)) {
-				getOrDefault(ir.globalStaticClasses, name, {
-					name,
+			if (member.hasModifier(SyntaxKind.StaticKeyword)) {
+				getOrDefault(ir.globalStaticClasses, className, {
+					name: className,
 					methods: [],
 					properties: [],
 				}).properties.push(item);
@@ -339,16 +341,18 @@ function visitClass(clazz: ClassDeclaration) {
 			properties.push(item);
 		}
 
-		if (Node.isMethodDeclaration(m)) {
-			let returns = visitReturnType(m);
-			const name = m.getName();
-			if (isLuaKeyword(name)) {
-				console.error(`"${name}" is invalid, name is a lua keyword.`);
+		if (Node.isMethodDeclaration(member)) {
+			let returns = visitReturnType(member);
+			const methodName = member.getName();
+			if (isLuaKeyword(methodName)) {
+				console.error(
+					`"${methodName}" is invalid, name is a lua keyword.`
+				);
 			}
 
 			let item: IRMethod = {
-				name,
-				params: m.getParameters().map((p) => {
+				name: methodName,
+				params: member.getParameters().map((p) => {
 					const name = p.getName();
 					if (isLuaKeyword(name)) {
 						console.error(
@@ -363,9 +367,9 @@ function visitClass(clazz: ClassDeclaration) {
 				returns,
 			};
 
-			if (m.hasModifier(SyntaxKind.StaticKeyword)) {
-				getOrDefault(ir.globalStaticClasses, name, {
-					name,
+			if (member.hasModifier(SyntaxKind.StaticKeyword)) {
+				getOrDefault(ir.globalStaticClasses, className, {
+					name: className,
 					methods: [],
 					properties: [],
 				}).methods.push(item);
@@ -376,8 +380,8 @@ function visitClass(clazz: ClassDeclaration) {
 		}
 	}
 
-	ir.classes.set(name, {
-		name,
+	ir.classes.set(className, {
+		name: className,
 		base,
 		properties,
 		methods,
