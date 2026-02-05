@@ -112,7 +112,7 @@
 -   [x] Purchases
 -   [x] Http
 -   [x] Input
--   [ ] Insert
+-   [x] Insert
 -   [ ] Json
 
 ## Types
