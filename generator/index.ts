@@ -74,6 +74,9 @@ export type Event<T... = ...any> = {
 `);
 
 emitter.emit(
+	`type ClassName = ${ir.types.map((c) => `"${c.Name}"`).join(" | ")};`
+);
+emitter.emit(
 	`type InstantiableClassName = ${Array.from(instantiables)
 		.map((n) => `"${n}"`)
 		.join(" | ")};\n`

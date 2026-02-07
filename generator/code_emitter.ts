@@ -8,6 +8,18 @@ const ADDITIONS_KEYS = Object.keys(ADDITIONS);
 const MODS = {
 	Instance: {
 		New: "New: (className: InstantiableClassName, parent: Instance?) -> Instance,",
+		FindChildByClass:
+			"function FindChildByClass(self, className: ClassName): Instance",
+		FindAncestorByClass:
+			"function FindAncestorByClass(self, className: ClassName): Instance",
+		GetChildrenOfClass:
+			"function GetChildrenOfClass(self, className: ClassName): { Instance }",
+		IsDescendantOfClass:
+			"function IsDescendantOfClass(self, className: ClassName): boolean",
+	},
+	NetworkedObject: {
+		IsA: "function IsA(self, className: ClassName): boolean",
+		ClassName: "ClassName: ClassName",
 	},
 };
 const MODS_KEYS = Object.keys(MODS);
@@ -181,28 +193,26 @@ export class CodeEmitter {
 		)
 			this.emit();
 
-		if (!isStaticPass) {
-			for (const property of type.Properties) {
-				if (!property.IsAccessibleByScripts) continue;
-				if (property.IsStatic) continue;
+		for (const property of type.Properties) {
+			if (!property.IsAccessibleByScripts) continue;
+			if (!(property.IsStatic == isStaticPass)) continue;
 
-				this.emit(
-					`\t${property.Name}: ${CodeEmitter.resolveType(
-						property.Type
-					)}`
-				);
-			}
-		} else {
-			for (const property of type.Properties) {
-				if (!property.IsAccessibleByScripts) continue;
-				if (!property.IsStatic) continue;
+			if (MODS_KEYS.includes(type.Name)) {
+				const properties = MODS[type.Name as keyof typeof MODS];
 
-				this.emit(
-					`\t${property.Name}: ${CodeEmitter.resolveType(
-						property.Type
-					)},`
-				);
+				if (Object.keys(properties).includes(property.Name)) {
+					const line =
+						properties[property.Name as keyof typeof properties];
+					this.emit(`\t${line}`);
+					continue;
+				}
 			}
+
+			this.emit(
+				`\t${property.Name}: ${CodeEmitter.resolveType(property.Type)}${
+					isStaticPass ? "," : ""
+				}`
+			);
 		}
 
 		if (ADDITIONS_KEYS.includes(type.Name)) {
