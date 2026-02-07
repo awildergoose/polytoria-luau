@@ -1,5 +1,9 @@
 import type { IREnum, IRMethod, IRParameter, IRType } from "./ir";
 
+const MODS = {
+	Instance: ["[string]: Instance"],
+};
+
 function unionize(types: Set<string>) {
 	if (types.size === 0) return "any";
 	return Array.from(types).join(" | ");
@@ -162,6 +166,13 @@ export class CodeEmitter {
 					)},`
 				);
 			}
+		}
+
+		if (Object.keys(MODS).includes(type.Name)) {
+			this.emit();
+
+			const lines = MODS[type.Name as keyof typeof MODS];
+			lines.forEach((v) => this.emit(`\t${v}`));
 		}
 
 		if (isStaticPass) this.emit("}\n");
