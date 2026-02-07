@@ -61,11 +61,18 @@ export class CodeEmitter {
 				this.emit(`\t${event.Name}: Event<${args}>`);
 			}
 
-			if (type.Events.length > 0 && type.Methods.length > 0) this.emit();
+			if (
+				type.Events.length > 0 &&
+				type.Methods.filter((m) => m.IsStatic == isStaticPass).length >
+					0
+			)
+				this.emit();
 		}
 
 		const methodsByName = new Map<string, IRMethod[]>();
 		for (const method of type.Methods) {
+			if (!(method.IsStatic == isStaticPass)) continue;
+
 			const arr = methodsByName.get(method.Name) || [];
 			arr.push(method);
 			methodsByName.set(method.Name, arr);
@@ -91,12 +98,15 @@ export class CodeEmitter {
 				let optional = false;
 
 				for (const ol of overloads) {
-					const p = ol.Parameters[i] as IRParameter | undefined;
-					if (!p) {
+					const parameter = ol.Parameters[i] as
+						| IRParameter
+						| undefined;
+
+					if (!parameter || (parameter && parameter.IsOptional)) {
 						optional = true;
 					} else {
-						seenNames.push(p.Name || "");
-						seenTypes.add(CodeEmitter.resolveType(p.Type));
+						seenNames.push(parameter.Name || "");
+						seenTypes.add(CodeEmitter.resolveType(parameter.Type));
 					}
 				}
 
@@ -137,7 +147,7 @@ export class CodeEmitter {
 		}
 
 		if (
-			type.Methods.length > 0 &&
+			type.Methods.filter((m) => m.IsStatic == isStaticPass).length > 0 &&
 			type.Properties.filter(
 				(x) => x.IsAccessibleByScripts && x.IsStatic == isStaticPass
 			).length > 0
