@@ -12,7 +12,7 @@ const EntrySchema = z
 		params: z.array(ParamSchema).optional(),
 		returns: z.array(z.string()).optional(),
 		keys: z.record(z.string(), z.string()).optional(),
-		learn_more_link: z.string().url().optional(),
+		learn_more_link: z.url().optional(),
 		code_sample: z.string().optional(),
 	})
 	.strict();
@@ -20,3 +20,4 @@ const EntrySchema = z
 export const DocumentationSchema = z.record(z.string(), EntrySchema);
 
 export type Documentation = z.infer<typeof DocumentationSchema>;
+export type DocumentationEntry = z.infer<typeof EntrySchema>;

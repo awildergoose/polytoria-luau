@@ -1,4 +1,4 @@
-import type { Documentation } from "./docs_ir";
+import type { Documentation, DocumentationEntry } from "./docs_ir";
 import type { IREnum, IRType } from "./ir";
 
 export class DocsEmitter {
@@ -24,8 +24,12 @@ export class DocsEmitter {
 		return `${DocsEmitter.DOCS_ROOT}/types/${name}#${subName}`;
 	}
 
+	emit(key: string, value: DocumentationEntry) {
+		this.output[`@polytoria/${key}`] = value;
+	}
+
 	emitEnum(enm: IREnum) {
-		this.output[`@polytoria/global/Enum.${enm.Name}`] = {
+		this.emit(`global/Enum.${enm.Name}`, {
 			documentation: enm.Description,
 			keys: Object.fromEntries(
 				enm.Options.map((option) => [
@@ -35,10 +39,10 @@ export class DocsEmitter {
 			),
 			learn_more_link: DocsEmitter.getEnumDocsUrl(enm.Name),
 			code_sample: "",
-		};
+		});
 
 		for (const option of enm.Options) {
-			this.output[`@polytoria/enum/${enm.Name}.${option.Name}`] = {
+			this.emit(`/enum/${enm.Name}.${option.Name}`, {
 				documentation: option.Description,
 				keys: {},
 				learn_more_link: DocsEmitter.getEnumMemberDocsUrl(
@@ -46,12 +50,12 @@ export class DocsEmitter {
 					option.Name
 				),
 				code_sample: "",
-			};
+			});
 		}
 	}
 
 	emitType(type: IRType) {
-		this.output[`@polytoria/globaltype/${type.Name}`] = {
+		this.emit(`globaltype/${type.Name}`, {
 			documentation: type.Description,
 			keys: Object.fromEntries([
 				...type.Events.map((event) => [
@@ -69,56 +73,57 @@ export class DocsEmitter {
 			]),
 			learn_more_link: DocsEmitter.getTypeDocsUrl(type.Name),
 			code_sample: "",
-		};
+		});
 
-		for (const member of [
-			...type.Events,
-			...type.Methods,
-			...type.Properties,
-		]) {
-			this.output[`@polytoria/globaltype/${type.Name}.${member.Name}`] = {
+		for (const member of [...type.Events, ...type.Properties]) {
+			this.emit(`globaltype/${type.Name}.${member.Name}`, {
 				documentation: member.Description,
 				learn_more_link: DocsEmitter.getTypeMemberDocsUrl(
 					type.Name,
 					member.Name
 				),
 				code_sample: "",
-			};
+			});
 		}
 
-		/*
-		// TODO impl similar
+		for (const method of type.Methods) {
+			const hasReturnType =
+				(method.ReturnType && method.ReturnType !== "nil") || false;
 
-        "@roblox/globaltype/AudioFlanger.GetConnectedWires/param/0": {
-            "documentation": "Imparts a whooshing or sweeping sound on audio streams."
-        },
-        "@roblox/globaltype/AudioFlanger.GetConnectedWires/param/1": {
-            "documentation": ""
-        },
-        "@roblox/globaltype/AudioFlanger.GetConnectedWires/return/0": {
-            "documentation": ""
-        },
-        "@roblox/globaltype/AudioFlanger.WiringChanged.Connect": {
-            "documentation": "Connects the given function to the event and returns an <code>RBXScriptConnection</code> that represents it.",
-            "learn_more_link": "https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal#Connect",
-            "params": [
-            {
-                "name": "self",
-                "documentation": "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/0"
-            },
-            {
-                "name": "func",
-                "documentation": "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/1"
-            }
-            ],
-            "returns": []
-        },
-        "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/0": {
-            "documentation": "An object that runs connected functions upon a specific occurrence."
-        },
-        "@roblox/globaltype/AudioFlanger.WiringChanged.Connect/param/1": {
-            "documentation": ""
-        },
-        */
+			this.emit(`globaltype/${type.Name}.${method.Name}`, {
+				documentation: method.Description,
+				learn_more_link: DocsEmitter.getTypeMemberDocsUrl(
+					type.Name,
+					method.Name
+				),
+				code_sample: "",
+				params: method.Parameters.map((p, i) => ({
+					name: p.Name,
+					documentation: `@polytoria/globaltype/${type.Name}.${method.Name}/param/${i}`,
+				})),
+				returns: hasReturnType
+					? [
+							`@polytoria/globaltype/${type.Name}.${method.Name}/return/0`,
+					  ]
+					: [],
+			});
+
+			method.Parameters.forEach((param, i) => {
+				this.emit(`globaltype/${type.Name}.${method.Name}/param/${i}`, {
+					documentation:
+						param.DefaultValue != null && param.DefaultValue != ""
+							? `${param.Name}: ${param.Type} = ${param.DefaultValue}`
+							: `${param.Name}: ${param.Type}${
+									param.IsOptional ? "?" : ""
+							  }`,
+				});
+			});
+
+			if (hasReturnType) {
+				this.emit(`globaltype/${type.Name}.${method.Name}/return/0`, {
+					documentation: method.ReturnType!,
+				});
+			}
+		}
 	}
 }
