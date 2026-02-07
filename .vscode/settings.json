@@ -10,5 +10,6 @@
     "luau-lsp.types.documentationFiles": [
         "./generated/generated.docs.json"
     ],
-    "luau-lsp.platform.type": "standard"
+    "luau-lsp.platform.type": "standard",
+    "luau-lsp.fflags.enableNewSolver": true
 }

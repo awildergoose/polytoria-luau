@@ -1,8 +1,15 @@
 import { YAML } from "bun";
 import { readdir } from "node:fs/promises";
-import { IREnumSchema, IRTypeSchema, IRSchema, type IR } from "./ir";
+import {
+	IREnumSchema,
+	IRTypeSchema,
+	IRSchema,
+	type IR,
+	type IRType,
+} from "./ir";
 import { CodeEmitter } from "./code_emitter";
 import { DocsEmitter } from "./docs_emitter";
+import { sortTypesInDependencyOrder } from "./utils";
 
 const ROOT = `${__dirname}/../docs-site/yaml`;
 const ENUMS = `${ROOT}/enums`;
@@ -33,13 +40,9 @@ start = Bun.nanoseconds();
 const emitter = new CodeEmitter();
 
 const instantiables: Set<string> = new Set();
-const bases: Set<string> = new Set();
 const statics: Set<[string, string]> = new Set();
 
 for (const c of ir.types.values()) {
-	if (c.BaseType) {
-		bases.add(c.BaseType);
-	}
 	if (c.IsInstantiatable) {
 		instantiables.add(c.Name);
 	}
@@ -76,10 +79,6 @@ emitter.emit(
 		.join(" | ")};\n`
 );
 
-for (const b of bases) {
-	emitter.emit(`declare class ${b} end`);
-}
-
 emitter.emit();
 
 for (const enm of fullIR.enums) {
@@ -90,20 +89,22 @@ emitter.emit();
 
 emitter.emit("type ENUM_LIST = {");
 for (const enm of fullIR.enums) {
-	emitter.emit(`${enm.Name}: ${enm.InternalName},`);
+	emitter.emit(`\t${enm.Name}: ${enm.InternalName},`);
 }
 emitter.emit("}");
 emitter.emit("declare Enum: ENUM_LIST");
 
 emitter.emit();
 
-for (const type of fullIR.types) {
+const sortedTypes = sortTypesInDependencyOrder(fullIR.types);
+
+for (const type of sortedTypes) {
 	emitter.emitType(type, false);
 }
 
 emitter.emit();
 
-for (const type of fullIR.types) {
+for (const type of sortedTypes) {
 	if (
 		type.Methods.find((v) => v.IsStatic) ||
 		type.Properties.find((v) => v.IsStatic)
@@ -124,7 +125,7 @@ start = Bun.nanoseconds();
 
 const docsEmitter = new DocsEmitter();
 for (const enm of fullIR.enums) docsEmitter.emitEnum(enm);
-for (const type of fullIR.types) docsEmitter.emitType(type);
+for (const type of sortedTypes) docsEmitter.emitType(type);
 
 console.log(
 	`Emitted docs in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`

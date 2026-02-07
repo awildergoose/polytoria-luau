@@ -5,6 +5,13 @@ const ADDITIONS = {
 };
 const ADDITIONS_KEYS = Object.keys(ADDITIONS);
 
+const MODS = {
+	Instance: {
+		New: "New: (className: InstantiableClassName, parent: Instance?) -> Instance,",
+	},
+};
+const MODS_KEYS = Object.keys(MODS);
+
 function unionize(types: Set<string>) {
 	if (types.size === 0) return "any";
 	return Array.from(types).join(" | ");
@@ -138,6 +145,17 @@ export class CodeEmitter {
 				returnTypes.add(CodeEmitter.resolveType(rt));
 			}
 			const mergedReturn = unionize(returnTypes);
+
+			if (MODS_KEYS.includes(type.Name)) {
+				const functions = MODS[type.Name as keyof typeof MODS];
+
+				if (Object.keys(functions).includes(methodName)) {
+					const line =
+						functions[methodName as keyof typeof functions];
+					this.emit(`\t${line}`);
+					continue;
+				}
+			}
 
 			if (!isStaticPass) {
 				if (overloads.some((o) => o.IsObsolete))
