@@ -4,7 +4,7 @@ This project supplies Luau type definitions for Polytoria.
 
 ## Compiling
 
-Simply use `bun compile` to compile the TypeScript types in `types` into Luau type definitions. The compiler can be found in the `compiler` folder. The output of the compiler goes into `generated/generated.d.ts`
+Simply use `bun generate` to generates types into Luau type definitions. The generator can be found in the `generator` folder. The output of the generator goes into `generated/generated.d.luau`
 
 ## Usage
 
