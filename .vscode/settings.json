@@ -10,13 +10,5 @@
     "luau-lsp.types.documentationFiles": [
         "./generated/generated.docs.json"
     ],
-    "luau-lsp.platform.type": "standard",
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "*.docs.json"
-            ],
-            "url": "./docs/schema.json"
-        }
-    ]
+    "luau-lsp.platform.type": "standard"
 }
