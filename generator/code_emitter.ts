@@ -1,8 +1,9 @@
 import type { IREnum, IRMethod, IRParameter, IRType } from "./ir";
 
-const MODS = {
+const ADDITIONS = {
 	Instance: ["[string]: Instance"],
 };
+const ADDITIONS_KEYS = Object.keys(ADDITIONS);
 
 function unionize(types: Set<string>) {
 	if (types.size === 0) return "any";
@@ -102,12 +103,20 @@ export class CodeEmitter {
 						| IRParameter
 						| undefined;
 
-					if (!parameter || (parameter && parameter.IsOptional)) {
+					if (!parameter) {
 						optional = true;
-					} else {
-						seenNames.push(parameter.Name || "");
-						seenTypes.add(CodeEmitter.resolveType(parameter.Type));
+						continue;
 					}
+
+					if (parameter.IsOptional) {
+						optional = true;
+					}
+
+					if (parameter.Name) {
+						seenNames.push(parameter.Name);
+					}
+
+					seenTypes.add(CodeEmitter.resolveType(parameter.Type));
 				}
 
 				let typeStr = unionize(seenTypes);
@@ -178,10 +187,10 @@ export class CodeEmitter {
 			}
 		}
 
-		if (Object.keys(MODS).includes(type.Name)) {
+		if (ADDITIONS_KEYS.includes(type.Name)) {
 			this.emit();
 
-			const lines = MODS[type.Name as keyof typeof MODS];
+			const lines = ADDITIONS[type.Name as keyof typeof ADDITIONS];
 			lines.forEach((v) => this.emit(`\t${v}`));
 		}
 
