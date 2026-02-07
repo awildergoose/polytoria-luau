@@ -9,7 +9,7 @@ import {
 } from "./ir";
 import { CodeEmitter } from "./code_emitter";
 import { DocsEmitter } from "./docs_emitter";
-import { sortTypesInDependencyOrder } from "./utils";
+import { getAllDerivedClasses, sortTypesInDependencyOrder } from "./utils";
 
 const ROOT = `${__dirname}/../docs-site/yaml`;
 const ENUMS = `${ROOT}/enums`;
@@ -36,6 +36,31 @@ for (const file of typeFiles) {
 const fullIR = IRSchema.parse(ir);
 console.log(`Parsed IR in ${((Bun.nanoseconds() - start) / 1e9).toFixed(3)}s!`);
 start = Bun.nanoseconds();
+
+const sortedTypes = sortTypesInDependencyOrder(fullIR.types);
+const typeByName = new Map<string, IRType>();
+
+for (const t of ir.types) {
+	typeByName.set(t.Name, t);
+}
+
+const childrenByBase = new Map<string, Set<string>>();
+
+for (const t of ir.types) {
+	if (!t.BaseType) continue;
+
+	let set = childrenByBase.get(t.BaseType);
+	if (!set) {
+		set = new Set();
+		childrenByBase.set(t.BaseType, set);
+	}
+
+	set.add(t.Name);
+}
+
+const assetDerivers = Array.from(
+	getAllDerivedClasses("BaseAsset", childrenByBase)
+).filter((n) => !ir.types.find((p) => p.Name === n)?.IsAbstract);
 
 const emitter = new CodeEmitter();
 
@@ -77,11 +102,15 @@ emitter.emit(
 	`type ClassName = ${ir.types.map((c) => `"${c.Name}"`).join(" | ")};`
 );
 emitter.emit(
+	`type AssetClassName = ${assetDerivers.map((n) => `"${n}"`).join(" | ")};`
+);
+emitter.emit(
 	`type InstantiableClassName = ${Array.from(instantiables)
 		.map((n) => `"${n}"`)
-		.join(" | ")};\n`
+		.join(" | ")};`
 );
 
+emitter.emit();
 emitter.emit();
 
 for (const enm of fullIR.enums) {
@@ -98,8 +127,6 @@ emitter.emit("}");
 emitter.emit("declare Enum: ENUM_LIST");
 
 emitter.emit();
-
-const sortedTypes = sortTypesInDependencyOrder(fullIR.types);
 
 for (const type of sortedTypes) {
 	emitter.emitType(type, false);

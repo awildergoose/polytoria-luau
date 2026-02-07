@@ -45,3 +45,24 @@ export function sortTypesInDependencyOrder(types: IRType[]) {
 
 	return orderedNames.map((n) => map.get(n)!);
 }
+
+export function getAllDerivedClasses(
+	base: string,
+	childrenByBase: Map<string, Set<string>>
+): Set<string> {
+	const result = new Set<string>();
+
+	function visit(name: string) {
+		const children = childrenByBase.get(name);
+		if (!children) return;
+
+		for (const child of children) {
+			if (result.has(child)) continue;
+			result.add(child);
+			visit(child);
+		}
+	}
+
+	visit(base);
+	return result;
+}

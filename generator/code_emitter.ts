@@ -21,6 +21,10 @@ const MODS = {
 		IsA: "function IsA(self, className: ClassName): boolean",
 		ClassName: "ClassName: ClassName",
 	},
+	AssetsService: {
+		NewAsset:
+			"function NewAsset(self, assetClassName: AssetClassName): BaseAsset",
+	},
 };
 const MODS_KEYS = Object.keys(MODS);
 
